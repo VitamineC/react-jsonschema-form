@@ -1,23 +1,23 @@
 module.exports = {
+  // https://json-schema.org/understanding-json-schema/reference/combining.html
   schema: {
-    type: "object",
-    allOf: [
-      {
+    definitions: {
+      address: {
+        type: "object",
         properties: {
-          lorem: {
-            type: ["string", "number"],
-          },
+          street_address: { type: "string" },
+          city: { type: "string" },
+          state: { type: "string" },
         },
+        required: ["street_address", "city", "state"],
       },
+    },
+
+    allOf: [
+      { $ref: "#/definitions/address" },
       {
         properties: {
-          lorem: {
-            type: "boolean",
-            minLength: 5,
-          },
-          ipsum: {
-            type: "string",
-          },
+          type: { enum: ["residential", "business"] },
         },
       },
     ],
