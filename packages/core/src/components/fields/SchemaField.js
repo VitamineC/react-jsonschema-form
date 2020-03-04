@@ -260,11 +260,8 @@ function SchemaFieldRender(props) {
           ? allOfSchema.then
           : allOfSchema.else;
 
-        console.log(allOfSchema);
-
         if (allOfSchema) {
           allOfSchema = resolveSchema(allOfSchema, rootSchema, formData); // resolve references etc.
-          console.log(allOfSchema);
         }
       }
 

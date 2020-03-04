@@ -170,6 +170,8 @@ function computeDefaults(
   } else if ("default" in schema) {
     // Use schema defaults for this node.
     defaults = schema.default;
+  } else if ("const" in schema) {
+    defaults = schema.const;
   } else if ("$ref" in schema) {
     // Use referenced schema defaults for this node.
     const refSchema = findSchemaDefinition(schema.$ref, rootSchema);

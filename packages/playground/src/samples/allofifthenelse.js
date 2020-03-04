@@ -9,8 +9,10 @@ module.exports = {
           "France",
           "Germany",
         ],
+        default: "United States of America",
       },
     },
+    required: ["country"],
     definitions: {
       uk: {
         properties: {
@@ -21,12 +23,12 @@ module.exports = {
       },
     },
     allOf: [
-      // USA
       {
         if: {
           properties: {
             country: {
               const: "United States of America",
+              default: "",
             },
           },
         },
@@ -38,12 +40,12 @@ module.exports = {
           },
         },
       },
-      // United Kingdom
       {
         if: {
           properties: {
             country: {
               const: "United Kingdom",
+              default: "",
             },
           },
         },
@@ -51,12 +53,12 @@ module.exports = {
           $ref: "#/definitions/uk",
         },
       },
-      // United Kingdom
       {
         if: {
           properties: {
             country: {
               const: "France",
+              default: "",
             },
           },
         },
