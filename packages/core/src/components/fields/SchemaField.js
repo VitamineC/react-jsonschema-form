@@ -1,8 +1,4 @@
-import {
-  ADDITIONAL_PROPERTY_FLAG,
-  mergeSchemas,
-  resolveSchema,
-} from "../../utils";
+import { ADDITIONAL_PROPERTY_FLAG } from "../../utils";
 import IconButton from "../IconButton";
 import React from "react";
 import PropTypes from "prop-types";
@@ -21,7 +17,6 @@ import {
   getSchemaType,
 } from "../../utils";
 import UnsupportedField from "./UnsupportedField";
-import { isValidAddDefaults } from "../../validate";
 
 const REQUIRED_FIELD_SYMBOL = "*";
 const COMPONENT_TYPES = {
@@ -248,30 +243,6 @@ function SchemaFieldRender(props) {
   let idSchema = props.idSchema;
   var schema = retrieveSchema(props.schema, rootSchema, formData);
 
-  let allOf = schema.allOf;
-
-  if (allOf) {
-    for (var i = 0; i < allOf.length; i++) {
-      let allOfSchema = allOf[i];
-
-      // if we see an if in our all of schema then evaluate the if schema and select the then / else, not sure if we should still merge without our if then else
-      if ("if" in allOfSchema) {
-        allOfSchema = isValidAddDefaults(allOfSchema.if, formData)
-          ? allOfSchema.then
-          : allOfSchema.else;
-
-        if (allOfSchema) {
-          allOfSchema = resolveSchema(allOfSchema, rootSchema, formData); // resolve references etc.
-        }
-      }
-
-      if (allOfSchema) {
-        schema = mergeSchemas(schema, allOfSchema);
-        delete schema.allOf;
-      }
-    }
-  }
-
   idSchema = mergeObjects(
     toIdSchema(schema, null, rootSchema, formData, idPrefix),
     idSchema
@@ -385,44 +356,6 @@ function SchemaFieldRender(props) {
   const _AnyOfField = registry.fields.AnyOfField;
   const _OneOfField = registry.fields.OneOfField;
 
-  let conditionalSchemaResult = null;
-
-  if (schema.if) {
-    var conditionalSchema = isValidAddDefaults(schema.if, formData)
-      ? schema.then
-      : schema.else;
-
-    if (conditionalSchema) {
-      conditionalSchema = resolveSchema(
-        conditionalSchema,
-        rootSchema,
-        formData
-      );
-
-      var ConditionalSchemaComponent = getFieldComponent(
-        conditionalSchema,
-        uiSchema,
-        idSchema,
-        fields
-      );
-
-      conditionalSchemaResult = (
-        <ConditionalSchemaComponent
-          {...props}
-          idSchema={idSchema}
-          schema={conditionalSchema}
-          uiSchema={{ ...uiSchema, classNames: undefined }}
-          disabled={disabled}
-          readonly={readonly}
-          autofocus={autofocus}
-          errorSchema={fieldErrorSchema}
-          formContext={formContext}
-          rawErrors={__errors}
-        />
-      );
-    }
-  }
-
   return (
     <FieldTemplate {...fieldProps}>
       {field}
@@ -467,8 +400,6 @@ function SchemaFieldRender(props) {
           uiSchema={uiSchema}
         />
       )}
-
-      {conditionalSchemaResult}
     </FieldTemplate>
   );
 }

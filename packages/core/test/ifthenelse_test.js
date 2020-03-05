@@ -100,7 +100,7 @@ describe("conditional items", () => {
     expect(node.querySelector("input[label=postal_code]")).not.eql(null);
   });
 
-  it("should not render control when data has not been filled in", () => {
+  it("should should render control when data has not been filled in", () => {
     const formData = {};
 
     const { node } = createFormComponent({
@@ -108,8 +108,10 @@ describe("conditional items", () => {
       formData,
     });
 
-    expect(node.querySelector("input[label=zipcode]")).to.eql(null);
-    expect(node.querySelector("input[label=postal_code]")).not.eql(null);
+    // This feels backwards but is basically because undefined equates to true when field is validated
+    // Please see https://github.com/epoberezkin/ajv/issues/913
+    expect(node.querySelector("input[label=zipcode]")).not.eql(null);
+    expect(node.querySelector("input[label=postal_code]")).to.eql(null);
   });
 
   it("should render then when condition is true with reference", () => {

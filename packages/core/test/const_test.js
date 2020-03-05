@@ -68,7 +68,7 @@ describe("const", () => {
     expect(comp.state.formData.foo).to.eql(123);
   });
 
-  it.only("should render a schema that uses const with a boolean value", () => {
+  it("should render a schema that uses const with a boolean value", () => {
     const schema = {
       type: "object",
       properties: {

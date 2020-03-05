@@ -660,13 +660,59 @@ export function retrieveSchema(schema, rootSchema = {}, formData = {}) {
   const hasAdditionalProperties =
     resolvedSchema.hasOwnProperty("additionalProperties") &&
     resolvedSchema.additionalProperties !== false;
+
   if (hasAdditionalProperties) {
-    return stubExistingAdditionalProperties(
+    resolvedSchema = stubExistingAdditionalProperties(
       resolvedSchema,
       rootSchema,
       formData
     );
   }
+
+  if ("if" in resolvedSchema) {
+    // Note that if and else are key words in javascript so extract to variable names which are allowed
+    var {
+      if: expression,
+      then,
+      else: otherwise,
+      ...resolvedSchemaLessConditional
+    } = resolvedSchema;
+    var conditionalSchema = isValid(expression, formData) ? then : otherwise;
+
+    if (conditionalSchema) {
+      conditionalSchema = resolveSchema(
+        conditionalSchema,
+        rootSchema,
+        formData
+      );
+      resolvedSchema = mergeSchemas(
+        resolvedSchemaLessConditional,
+        conditionalSchema
+      );
+    }
+  }
+
+  let allOf = resolvedSchema.allOf;
+
+  if (allOf) {
+    for (var i = 0; i < allOf.length; i++) {
+      let allOfSchema = allOf[i];
+
+      // if we see an if in our all of schema then evaluate the if schema and select the then / else, not sure if we should still merge without our if then else
+      if ("if" in allOfSchema) {
+        allOfSchema = isValid(allOfSchema.if, formData)
+          ? allOfSchema.then
+          : allOfSchema.else;
+      }
+
+      if (allOfSchema) {
+        allOfSchema = resolveSchema(allOfSchema, rootSchema, formData); // resolve references etc.
+        resolvedSchema = mergeSchemas(resolvedSchema, allOfSchema);
+        delete resolvedSchema.allOf;
+      }
+    }
+  }
+
   return resolvedSchema;
 }
 
