@@ -12,7 +12,8 @@
     "lint": "lerna run lint",
     "cs-check": "lerna run cs-check",
     "cs-format": "lerna run cs-format",
-    "dist": "lerna run dist"
+    "dist": "lerna run dist",
+    "prepare": "npm run dist"
   },
   "dependencies": {
     "prettier": "^1.18.2",
