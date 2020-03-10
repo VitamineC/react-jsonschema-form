@@ -20,6 +20,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowSyntheticDefaultImports": true,
+    "noEmit": true,
     "moduleResolution": "node",
     "baseUrl": "./",
     "paths": {

@@ -7,7 +7,7 @@ The `withTheme` component provides an easy way to extend the functionality of re
 
 ```jsx
 import React, { Component } from 'react';
-import { withTheme } from 'react-jsonschema-form';
+import { withTheme } from '@rjsf/core';
 import Bootstrap4Theme from 'react-jsonschema-form-theme-bs4';
 
 const ThemedForm = withTheme(Bootstrap4Theme); 
